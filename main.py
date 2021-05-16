@@ -13,7 +13,7 @@ URL = 'https://www.cowin.gov.in/home'
 ELEMENT_XPATH = '/html/body/app-root/div/app-home/div[2]/div/appointment-table/div/div/div/div/div/div/div/div/div' \
                 '/div/div[2]/form '
 account_sid = 'AC4effe82a63150e1840bce6f0c50caa28'
-auth_token = '26e5257a8f11b8835bd913644e1c5f17'
+auth_token = '7ecfef9e143d6569145263309eb6da02'
 phno = 'whatsapp:+14155238886'
 client = Client(account_sid, auth_token)
 
@@ -32,6 +32,7 @@ def main(pin, ct):
         time.sleep(2)
         locations = driver.find_elements_by_class_name("center-name-title")
         status = driver.find_elements_by_class_name("slots-box")
+        dates = driver.find_elements_by_class_name("availability-date")
 
         for index, location in enumerate(locations):
             for i in range(7):
@@ -40,11 +41,10 @@ def main(pin, ct):
                     agelimit = status[i + index *
                                       7].text.split("\n")[2].strip()
                     if agelimit == age_group:
-                        vaccine = status[i + index *
-                                         7].text.split("\n")[1].strip()
+                        vaccine = status[i + index * 7].text.split("\n")[1].strip()
+                        date = dates[i].text
                         count = count + 1
-                        info = info + \
-                            f'Location - {location.text}\nSlots - *{slots}*\nVaccine - {vaccine}\nAge group - 18+\n\n'
+                        info = info + f'Location - {location.text}\nSlots - *{slots}*\nVaccine - {vaccine}\nAge group - 18+\nDate - {date}\n\n'
     except TimeoutException:
         print("Could not find the desired element")
     finally:
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     print("Enter your Whatsapp number including country code without any spaces")
     contact = input('>')
     print(
-        "Now send a Whatsapp message \'join curve-bread\' from your number to +14155238886 and then press enter...")
+        f"Now send a Whatsapp message \'join curve-bread\' from your number to {phno} and then press enter...")
     input()
     print("You're done. You will receive Whatsapp notifications when vaccine is available in your area")
     global cached_message
